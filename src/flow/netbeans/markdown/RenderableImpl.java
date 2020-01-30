@@ -81,7 +81,7 @@ public class RenderableImpl implements Renderable {
         HtmlRenderer renderer = HtmlRenderer.builder(options).build();
 
         // You can re-use parser and renderer instances
-        Node document = parser.parse("This is *Sparta*");
+        Node document = parser.parse( sourceText );
         bodyText = renderer.render(document);  // "<p>This is <em>Sparta</em></p>\n"
         
         }
