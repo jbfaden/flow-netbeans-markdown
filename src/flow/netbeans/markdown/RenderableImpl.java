@@ -16,6 +16,10 @@ import org.pegdown.LinkRenderer;
 import org.pegdown.ParsingTimeoutException;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ast.RootNode;
+import com.vladsch.flexmark.util.ast.Node;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.data.MutableDataSet;
 
 public class RenderableImpl implements Renderable {
     private static final String TITLE = "{%TITLE%}";
@@ -41,26 +45,45 @@ public class RenderableImpl implements Renderable {
     private String renderBodyText(Set<RenderOption> renderOptions, MarkdownGlobalOptions markdownOptions,
             String sourceText) throws IOException {
         String bodyText;
-        try {
-            PegDownProcessor markdownProcessor = new PegDownProcessor(markdownOptions.getExtensionsValue());
-            final boolean resolveImageUrls = renderOptions.contains(RenderOption.RESOLVE_IMAGE_URLS);
-            final boolean resolveLinkUrls = renderOptions.contains(RenderOption.RESOLVE_LINK_URLS);
-            if (resolveImageUrls || resolveLinkUrls) {
-                RootNode rootNode = markdownProcessor.parseMarkdown(sourceText.toCharArray());
-                FileObject sourceFile = context.getPrimaryFile();
-                final PreviewSerializer htmlSerializer
-                        = new PreviewSerializer(sourceFile.toURL(), resolveImageUrls, resolveLinkUrls);
-                bodyText = htmlSerializer.toHtml(rootNode);
+        boolean usePegDown= false;
+        if ( usePegDown ) {
+            try {
+                PegDownProcessor markdownProcessor = new PegDownProcessor(markdownOptions.getExtensionsValue());
+                final boolean resolveImageUrls = renderOptions.contains(RenderOption.RESOLVE_IMAGE_URLS);
+                final boolean resolveLinkUrls = renderOptions.contains(RenderOption.RESOLVE_LINK_URLS);
+                if (resolveImageUrls || resolveLinkUrls) {
+                    RootNode rootNode = markdownProcessor.parseMarkdown(sourceText.toCharArray());
+                    FileObject sourceFile = context.getPrimaryFile();
+                    final PreviewSerializer htmlSerializer
+                            = new PreviewSerializer(sourceFile.toURL(), resolveImageUrls, resolveLinkUrls);
+                    bodyText = htmlSerializer.toHtml(rootNode);
+                }
+                else {
+                    RootNode rootNode = markdownProcessor.parseMarkdown(sourceText.toCharArray());
+                    final ExportSerializer htmlSerializer
+                            = new ExportSerializer(new LinkRenderer());
+                    bodyText = htmlSerializer.toHtml(rootNode);
+                }
             }
-            else {
-                RootNode rootNode = markdownProcessor.parseMarkdown(sourceText.toCharArray());
-                final ExportSerializer htmlSerializer
-                        = new ExportSerializer(new LinkRenderer());
-                bodyText = htmlSerializer.toHtml(rootNode);
+            catch (ParsingTimeoutException ex) {
+                throw new IOException(ex);
             }
-        }
-        catch (ParsingTimeoutException ex) {
-            throw new IOException(ex);
+        } else {
+            MutableDataSet options = new MutableDataSet();
+
+        // uncomment to set optional extensions
+        //options.set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), StrikethroughExtension.create()));
+
+        // uncomment to convert soft-breaks to hard breaks
+        //options.set(HtmlRenderer.SOFT_BREAK, "<br />\n");
+
+        Parser parser = Parser.builder(options).build();
+        HtmlRenderer renderer = HtmlRenderer.builder(options).build();
+
+        // You can re-use parser and renderer instances
+        Node document = parser.parse("This is *Sparta*");
+        bodyText = renderer.render(document);  // "<p>This is <em>Sparta</em></p>\n"
+        
         }
         return bodyText;
     }

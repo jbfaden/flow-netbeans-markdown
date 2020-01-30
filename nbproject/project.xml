@@ -288,12 +288,12 @@
             </test-dependencies>
             <public-packages/>
             <class-path-extension>
-                <runtime-relative-path>ext/parboiled-java-1.1.7.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/parboiled-java-1.1.7.jar</binary-origin>
+                <runtime-relative-path>ext/flexmark-all-0.50.50.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/flexmark-all-0.50.50.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pegdown-1.5.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/pegdown-1.5.0.jar</binary-origin>
+                <runtime-relative-path>ext/parboiled-java-1.1.7.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/parboiled-java-1.1.7.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/asm-util-4.1.jar</runtime-relative-path>
@@ -314,6 +314,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/asm-analysis-4.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/asm-analysis-4.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/pegdown-1.5.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pegdown-1.5.0.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>
