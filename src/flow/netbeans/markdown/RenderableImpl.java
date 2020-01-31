@@ -1,5 +1,7 @@
 package flow.netbeans.markdown;
 
+import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
+import com.vladsch.flexmark.ext.tables.TablesExtension;
 import flow.netbeans.markdown.api.RenderOption;
 import flow.netbeans.markdown.api.Renderable;
 import flow.netbeans.markdown.options.MarkdownGlobalOptions;
@@ -20,6 +22,7 @@ import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.data.MutableDataSet;
+import java.util.Arrays;
 
 public class RenderableImpl implements Renderable {
     private static final String TITLE = "{%TITLE%}";
@@ -71,18 +74,18 @@ public class RenderableImpl implements Renderable {
         } else {
             MutableDataSet options = new MutableDataSet();
 
-        // uncomment to set optional extensions
-        //options.set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), StrikethroughExtension.create()));
+            // uncomment to set optional extensions
+            options.set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), StrikethroughExtension.create()));
 
-        // uncomment to convert soft-breaks to hard breaks
-        //options.set(HtmlRenderer.SOFT_BREAK, "<br />\n");
+            // uncomment to convert soft-breaks to hard breaks
+            //options.set(HtmlRenderer.SOFT_BREAK, "<br />\n");
 
-        Parser parser = Parser.builder(options).build();
-        HtmlRenderer renderer = HtmlRenderer.builder(options).build();
+            Parser parser = Parser.builder(options).build();
+            HtmlRenderer renderer = HtmlRenderer.builder(options).build();
 
-        // You can re-use parser and renderer instances
-        Node document = parser.parse( sourceText );
-        bodyText = renderer.render(document);  // "<p>This is <em>Sparta</em></p>\n"
+            // You can re-use parser and renderer instances
+            Node document = parser.parse( sourceText );
+            bodyText = renderer.render(document);  // "<p>This is <em>Sparta</em></p>\n"
         
         }
         return bodyText;
